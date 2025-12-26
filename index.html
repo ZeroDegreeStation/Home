@@ -428,6 +428,120 @@
             margin-top: 1rem;
         }
 
+        /* Email Modal */
+        .email-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .email-modal.active {
+            display: flex;
+        }
+
+        .email-modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .email-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .progress-step.active {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .progress-step.completed {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .progress-line {
+            flex: 1;
+            height: 3px;
+            background-color: #eee;
+            max-width: 50px;
+        }
+
+        .progress-line.completed {
+            background-color: #27ae60;
+        }
+
+        .email-preview {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .email-preview h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .email-address {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            background-color: white;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .email-address i {
+            margin-right: 0.8rem;
+            color: #3498db;
+        }
+
         /* Buttons */
         .cta-button {
             display: inline-block;
@@ -466,6 +580,14 @@
 
         .pay-now-btn:hover {
             background-color: #c0392b;
+        }
+
+        .success-btn {
+            background-color: #27ae60;
+        }
+
+        .success-btn:hover {
+            background-color: #219653;
         }
 
         /* Footer */
@@ -621,8 +743,7 @@
         <p class="tagline">Serve Your Convenience</p>
         
         <div class="hero-content">
-            <h1>Welcome to the Guest House </h1> 
-            <h1><span class="highlight">Snow Station</span></h1>
+            <h1>Welcome to the Guest House <span class="highlight">Snow Station</span></h1>
             <p>Located nearby Meiho Ski Resort, we provide exclusive booking for your convenience. Enjoy comfortable accommodations just minutes from the slopes, perfect for ski enthusiasts and winter vacationers.</p>
             <a href="#stay-plans" class="cta-button">View Our Stay Plans</a>
         </div>
@@ -955,6 +1076,106 @@
         </section>
     </main>
     
+    <!-- Email Notification Modal -->
+    <div class="email-modal" id="emailModal">
+        <div class="email-modal-content">
+            <button class="close-modal" id="closeEmailModal">&times;</button>
+            
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <i class="fas fa-envelope-circle-check" style="font-size: 3rem; color: #27ae60; margin-bottom: 1rem;"></i>
+                <h2 style="color: #2c3e50;">Sending Confirmation Emails</h2>
+                <p style="color: #666;">We're sending booking confirmation emails to you and our team.</p>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="email-progress">
+                <div class="progress-step completed">1</div>
+                <div class="progress-line completed"></div>
+                <div class="progress-step active" id="step2">2</div>
+                <div class="progress-line" id="line2"></div>
+                <div class="progress-step" id="step3">3</div>
+            </div>
+            
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <p id="progressText">Processing your booking...</p>
+            </div>
+            
+            <!-- Email Preview -->
+            <div class="email-preview">
+                <h4>Emails Being Sent:</h4>
+                
+                <div class="email-address">
+                    <i class="fas fa-user"></i>
+                    <div>
+                        <div style="font-weight: 600;" id="customerEmail">customer@example.com</div>
+                        <div style="font-size: 0.9rem; color: #666;">Booking confirmation & receipt</div>
+                    </div>
+                </div>
+                
+                <div class="email-address">
+                    <i class="fas fa-building"></i>
+                    <div>
+                        <div style="font-weight: 600;">reservations@snowstation.com</div>
+                        <div style="font-size: 0.9rem; color: #666;">New booking notification</div>
+                    </div>
+                </div>
+                
+                <div class="email-address">
+                    <i class="fas fa-bell"></i>
+                    <div>
+                        <div style="font-weight: 600;">owner@snowstation.com</div>
+                        <div style="font-size: 0.9rem; color: #666;">Owner notification</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Email Templates Preview -->
+            <div style="margin-top: 2rem; display: none;" id="emailTemplates">
+                <h4 style="color: #2c3e50; margin-bottom: 1rem;">Email Preview:</h4>
+                
+                <div style="background: white; border: 1px solid #ddd; border-radius: 5px; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                        <strong>To:</strong> <span id="previewCustomerEmail"></span><br>
+                        <strong>Subject:</strong> Booking Confirmation - Snow Station Guest House
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        <p>Dear <span id="previewCustomerName"></span>,</p>
+                        <p>Thank you for your booking at Snow Station Guest House!</p>
+                        <p><strong>Booking Reference:</strong> <span id="previewBookingRef"></span></p>
+                        <p><strong>Check-in:</strong> <span id="previewCheckin"></span></p>
+                        <p><strong>Check-out:</strong> <span id="previewCheckout"></span></p>
+                        <p>We look forward to welcoming you!</p>
+                    </div>
+                </div>
+                
+                <div style="background: white; border: 1px solid #ddd; border-radius: 5px; padding: 1rem;">
+                    <div style="border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                        <strong>To:</strong> reservations@snowstation.com<br>
+                        <strong>Subject:</strong> New Booking - <span id="previewBookingRef2"></span>
+                    </div>
+                    <div style="font-size: 0.9rem;">
+                        <p><strong>New booking received:</strong></p>
+                        <p><strong>Guest:</strong> <span id="previewCustomerName2"></span></p>
+                        <p><strong>Dates:</strong> <span id="previewDates"></span></p>
+                        <p><strong>Plan:</strong> <span id="previewPlan"></span></p>
+                        <p>Please prepare for guest arrival.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Success Message -->
+            <div style="text-align: center; margin-top: 2rem; display: none;" id="successMessage">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: #27ae60; margin-bottom: 1rem;"></i>
+                <h3 style="color: #2c3e50;">Booking Confirmed!</h3>
+                <p style="color: #666; margin: 1rem 0;">Confirmation emails have been sent successfully.</p>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    <i class="fas fa-envelope"></i> Check your inbox for booking details
+                </p>
+                <button class="cta-button success-btn" id="finishBookingBtn">Return to Homepage</button>
+            </div>
+        </div>
+    </div>
+    
     <footer>
         <div class="footer-content">
             <div class="footer-logo">Snow<span>Station</span></div>
@@ -1135,6 +1356,23 @@
             e.target.value = e.target.value.replace(/[^0-9]/g, '').substring(0, 3);
         });
         
+        // Email modal controls
+        const emailModal = document.getElementById('emailModal');
+        const closeEmailModal = document.getElementById('closeEmailModal');
+        
+        closeEmailModal.addEventListener('click', () => {
+            emailModal.classList.remove('active');
+        });
+        
+        // Finish booking button
+        document.getElementById('finishBookingBtn').addEventListener('click', () => {
+            emailModal.classList.remove('active');
+            // Reset form
+            resetBookingForm();
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
         // Complete booking button
         document.getElementById('completeBookingBtn').addEventListener('click', function() {
             // Validate guest form
@@ -1191,53 +1429,93 @@
                 }
             }
             
-            // Get booking details
+            // Show email sending modal
+            showEmailSendingModal(name, email, plan, checkin, checkout, guests, paymentMethod.value);
+        });
+        
+        function showEmailSendingModal(name, email, plan, checkin, checkout, guests, paymentMethod) {
+            // Set customer email in modal
+            document.getElementById('customerEmail').textContent = email;
+            document.getElementById('previewCustomerEmail').textContent = email;
+            document.getElementById('previewCustomerName').textContent = name;
+            document.getElementById('previewCustomerName2').textContent = name;
+            
+            // Generate booking reference
+            const bookingRef = 'SNOW-' + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('previewBookingRef').textContent = bookingRef;
+            document.getElementById('previewBookingRef2').textContent = bookingRef;
+            
+            // Format dates
+            const checkinDate = new Date(checkin).toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            const checkoutDate = new Date(checkout).toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            const nights = calculateNights(checkin, checkout);
+            
+            document.getElementById('previewCheckin').textContent = checkinDate;
+            document.getElementById('previewCheckout').textContent = checkoutDate;
+            document.getElementById('previewDates').textContent = `${checkinDate} to ${checkoutDate} (${nights} nights)`;
+            
+            // Set plan name
             const planNames = {
                 'weekend-getaway': 'Weekend Getaway',
                 'ski-adventure': 'Ski Adventure',
                 'family-package': 'Family Ski Package'
             };
+            document.getElementById('previewPlan').textContent = planNames[plan] || plan;
             
-            const nights = calculateNights(checkin, checkout);
-            const totalAmount = document.getElementById('totalAmount').textContent;
+            // Show modal
+            emailModal.classList.add('active');
             
-            // Generate booking reference
-            const bookingRef = 'SNOW-' + Math.floor(100000 + Math.random() * 900000);
+            // Start email sending simulation
+            simulateEmailSending();
+        }
+        
+        function simulateEmailSending() {
+            const progressText = document.getElementById('progressText');
+            const step2 = document.getElementById('step2');
+            const line2 = document.getElementById('line2');
+            const step3 = document.getElementById('step3');
+            const emailTemplates = document.getElementById('emailTemplates');
+            const successMessage = document.getElementById('successMessage');
             
-            // Show success message
-            const paymentMethods = {
-                'credit-card': 'Credit Card',
-                'paypal': 'PayPal',
-                'bank-transfer': 'Bank Transfer',
-                'pay-at-hotel': 'Pay at Hotel'
-            };
+            // Step 1: Processing booking (already done)
             
-            const paymentType = paymentMethods[paymentMethod.value];
+            // Step 2: Sending emails
+            setTimeout(() => {
+                progressText.textContent = 'Sending confirmation emails...';
+                step2.classList.remove('active');
+                step2.classList.add('completed');
+                line2.classList.add('completed');
+                step3.classList.add('active');
+            }, 1500);
             
-            let confirmationMessage = `
-✅ BOOKING CONFIRMED!
-
-Booking Reference: ${bookingRef}
-Name: ${name}
-Stay Plan: ${planNames[plan]}
-Check-in: ${checkin}
-Check-out: ${checkout} (${nights} nights)
-Guests: ${guests}
-Total Amount: ${totalAmount}
-Payment Method: ${paymentType}
-
-A confirmation email has been sent to ${email}.
-            `;
-            
-            if (paymentMethod.value === 'bank-transfer') {
-                confirmationMessage += `\n\nPlease complete your bank transfer within 3 business days.\nUse booking reference: ${bookingRef}`;
-            } else if (paymentMethod.value === 'pay-at-hotel') {
-                confirmationMessage += `\n\nPayment will be collected upon arrival.\nPlease bring your booking confirmation.`;
-            }
-            
-            alert(confirmationMessage);
-            
-            // Reset form
+            // Step 3: Show email preview
+            setTimeout(() => {
+                progressText.textContent = 'Emails sent successfully!';
+                step3.classList.remove('active');
+                step3.classList.add('completed');
+                
+                // Show email templates preview
+                emailTemplates.style.display = 'block';
+                
+                // Show success message after a delay
+                setTimeout(() => {
+                    emailTemplates.style.display = 'none';
+                    successMessage.style.display = 'block';
+                }, 2000);
+            }, 3000);
+        }
+        
+        function resetBookingForm() {
             document.getElementById('guestForm').reset();
             document.getElementById('selected-plan').removeAttribute('data-price');
             document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
@@ -1247,7 +1525,22 @@ A confirmation email has been sent to ${email}.
             document.getElementById('checkin').setAttribute('min', today);
             document.getElementById('checkout').removeAttribute('min');
             updatePricing();
-        });
+            
+            // Reset email modal
+            const step2 = document.getElementById('step2');
+            const line2 = document.getElementById('line2');
+            const step3 = document.getElementById('step3');
+            const emailTemplates = document.getElementById('emailTemplates');
+            const successMessage = document.getElementById('successMessage');
+            
+            step2.classList.remove('completed');
+            step2.classList.add('active');
+            line2.classList.remove('completed');
+            step3.classList.remove('completed', 'active');
+            emailTemplates.style.display = 'none';
+            successMessage.style.display = 'none';
+            document.getElementById('progressText').textContent = 'Processing your booking...';
+        }
         
         // Navigation highlighting
         const sections = document.querySelectorAll('section');
